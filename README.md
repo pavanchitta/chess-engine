@@ -11,6 +11,6 @@ figure out how to represent and execute moves
 a combination of heuristic-based and learning-based
 - Develop algorithm to train the AI to play, probably a simple minimax approach
 - Create a simple interactive web-app UI to be able to interact with user. Should
-be able to do this with the SVG board images.
+be able to do this with the pgn board images.
 
 
