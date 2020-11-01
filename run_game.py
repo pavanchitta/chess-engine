@@ -8,6 +8,7 @@ class Game:
     def __init__(self, player_is_white=True):
         self.board = Board()
         self.player_color = chess.WHITE if player_is_white else chess.BLACK
+        # TODO: Implement functionality for player being black
         # if not player_is_white:
         #     self.board.state = self.board.state.mirror()
         self.computer = Computer(not self.player_color)

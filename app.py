@@ -14,7 +14,9 @@ def create_chess():
         <img src="/board">
         <p><form action="/move"><input type=text name=move><input type=submit value="Make move"></form></p>
         <p><form action="/reset"><input type=submit value="Reset"></form></p>
-    '''
+        <p><form action="/undo"><input type=submit value="Undo Move"></form></p>
+        <p> Latest computer move: {} </p>
+    '''.format(game.board.state.peek().uci() if game.board.state.move_stack else "Null")
 
 
 @app.route("/reset")
@@ -24,9 +26,20 @@ def reset():
     return create_chess()
 
 
+@app.route("/undo")
+def undo():
+    print("Undo latest move")
+    assert(len(game.board.state.move_stack) >= 2)
+    game.board.state.pop()
+    game.board.state.pop()
+    return create_chess()
+
+
 @app.route("/move")
 def move():
     move_str = request.args.get('move', default="")
+    if (len(move_str) != 4 and len(move_str) != 5):
+        return create_chess()
     move = chess.Move.from_uci(move_str)
     if move in game.board.state.legal_moves:
         game.board.state.push(move)
@@ -41,6 +54,6 @@ def board():
     return Response(chess.svg.board(game.board.state, size=350), mimetype='image/svg+xml')
 
 if __name__ == "__main__":
-    player_is_white = input("Enter: w for White, b for Black: ") == 'w'
-    game = Game(player_is_white)
+    # player_is_white = input("Enter: w for White, b for Black: ") == 'w'
+    game = Game(player_is_white=True)
     app.run(debug=True)
