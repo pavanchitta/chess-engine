@@ -41,6 +41,8 @@ class Computer:
                 max_score = float("-inf")
                 best_move = None
                 for move in board.state.legal_moves:
+                    if not move:
+                        continue
                     board.state.push(move)
                     score = minimax(board, depth-1, not cpu_turn)
                     if score > max_score:
@@ -54,6 +56,8 @@ class Computer:
                 # Assume optimal play by opponent to minimize value
                 min_score = float("inf")
                 for move in board.state.legal_moves:
+                    if not move:
+                        continue
                     board.state.push(move)
                     min_score = min(min_score, minimax(board, depth-1, not cpu_turn))
                     board.state.pop()
