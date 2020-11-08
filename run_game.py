@@ -1,6 +1,7 @@
 from board import Board
 import chess
 from computer import Computer
+import keras
 
 
 class Game:
@@ -22,6 +23,8 @@ class Game:
     def player_to_move(self):
         return self.board.state.turn == self.player_color
 
+ml_model_file ='100000_bsize512_epochs5'
+ml_model = keras.models.load_model(f'models/trained_models/{ml_model_file}')
 
 def run_game():
 
@@ -38,7 +41,7 @@ def run_game():
                 if move in board.state.legal_moves:
                     break
         else:
-            move = game.computer.generate_move(board)
+            move = game.computer.generate_move(board, ml_model)
         board.state.push(move)
 
     print("GAME OVER")

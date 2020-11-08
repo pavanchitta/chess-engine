@@ -5,6 +5,18 @@ from run_game import Game
 from computer import Computer
 from flask import Flask, render_template, request, Response
 import time
+import keras
+from tensorflow.python.keras.backend import set_session
+
+import tensorflow as tf
+
+sess = keras.backend.get_session()
+graph = tf.get_default_graph()
+set_session(sess)
+
+ml_model_file ='100000_bsize512_epochs5'
+ml_model = keras.models.load_model(f'models/trained_models/{ml_model_file}')
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
@@ -37,16 +49,22 @@ def undo():
 
 @app.route("/move")
 def move():
-    move_str = request.args.get('move', default="")
-    if (len(move_str) != 4 and len(move_str) != 5):
+
+    global graph
+    global sess
+    global ml_model
+    with graph.as_default():
+        set_session(sess)
+        move_str = request.args.get('move', default="")
+        if (len(move_str) != 4 and len(move_str) != 5):
+            return create_chess()
+        move = chess.Move.from_uci(move_str)
+        if move in game.board.state.legal_moves:
+            game.board.state.push(move)
+            # Get computer move
+            cpu_move = game.computer.generate_move(game.board, ml_model)
+            game.board.state.push(cpu_move)
         return create_chess()
-    move = chess.Move.from_uci(move_str)
-    if move in game.board.state.legal_moves:
-        game.board.state.push(move)
-        # Get computer move
-        cpu_move = game.computer.generate_move(game.board)
-        game.board.state.push(cpu_move)
-    return create_chess()
 
 
 @app.route("/board")
