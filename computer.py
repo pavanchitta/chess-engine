@@ -30,6 +30,22 @@ class Computer:
         #print("BOARD SCORE: ", score)
         return score
 
+    def value_pawn_advance(self, board, color):
+
+        score = 0
+        pieces_map = board.state.piece_map()
+        for square, piece in pieces_map.items():
+            # First get the penalties on the pieces that are being attacked
+            if piece.color == color and piece.symbol().lower() == 'p':
+                if piece.color == chess.WHITE:
+                    row_adv = square // 8 - 1
+                else:
+                    row_adv = (63 - square) // 8 - 1
+                score += row_adv
+        #print(board.state)
+        #print("Pawn advance score:", score)
+        return score/(6 * 8) # Normalize by the max amount of advancement possible
+
     def value_attacks(self, board, color):
 
         # TODO: NEED TO TAKE INTO ACCOUNT WHOSE TURN IT IS
@@ -79,9 +95,9 @@ class Computer:
         attacking_score = (1-future_attack_discount)*max_attacking + future_attack_discount * sum(attacking_score)
         attacked_score = (1-future_attack_discount)*max_attacked + future_attack_discount * sum(attacked_score)
 
-        print("Attacking score:", attacking_score)
-        print("Attacked score:", attacked_score)
-        print(board.state)
+        # print("Attacking score:", attacking_score)
+        # print("Attacked score:", attacked_score)
+        # print(board.state)
 
         # if board.state.turn == self.color:
         #     return attacking_score - attacked_score
@@ -116,7 +132,13 @@ class Computer:
         if board.state.fullmove_number < 5:
             beta = 0.1
 
-        score = beta * ml_score + (1-beta)*heuristics_score
+        # Pawn advancement score factor
+        gamma = 0.05
+
+        score = beta * ml_score + (1-beta)*heuristics_score + \
+                gamma * self.value_pawn_advance(board, color)
+
+        score /= (1 + gamma)
 
         #print("BOARD SCORE: ", score)
         return score
