@@ -1,16 +1,13 @@
 This repo implements a simple chess AI
 
+- Build a representation for the board and pieces and board state by using a light-weight wrapper on top of python-chess API
+- Uses a minimax algorithm with alpha-beta pruning to search the game tree when considering moves, and leaf node board positions
+are evaluated using a combination of heuristic-based and learning-based techniques.
+- Implemented a simple interactive web-app UI to play against the CPU using Flask
 
-Design Doc
+To launch app on localhost, run python app.py
 
-Tasks
+![alt text](https://github.com/pavanchitta/chess-engine/blob/master/ui.png?raw=true)
 
-- Build a representation for the board and pieces and board state. Also 
-figure out how to represent and execute moves
-- Construct a value function in order to evaluate the state of a board, ideally
-a combination of heuristic-based and learning-based
-- Develop algorithm to train the AI to play, probably a simple minimax approach
-- Create a simple interactive web-app UI to be able to interact with user. Should
-be able to do this with the pgn board images.
 
 

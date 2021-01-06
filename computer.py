@@ -22,7 +22,7 @@ class Computer:
             return float("-inf")
 
         score = 0
-        piece_value_dict = {'p': 10, 'n': 30, 'b': 30, 'r': 50, 'q': 90, 'k': 0}
+        piece_value_dict = {'p': 10, 'n': 30, 'b': 30, 'r': 50, 'q': 90, 'k': 900}
         pieces_map = board.state.piece_map()
         for piece in pieces_map.values():
             piece_value = piece_value_dict[piece.symbol().lower()] * (1 if piece.color == color else -1)
@@ -171,7 +171,6 @@ class Computer:
                     alpha = max(max_score, alpha)
                     if (alpha >= beta):
                         break
-
                 # Need to return the best move as well if in the outer most depth
                 return (max_score, best_moves) if depth != self.depth else (max_score, best_moves, best_move)
 
@@ -188,6 +187,7 @@ class Computer:
                     board.state.pop()
                     beta = min(min_score, beta)
                     if (beta <= alpha):
+                        # print("Breaking for beta value", beta)
                         break
                 return min_score, best_moves
 
